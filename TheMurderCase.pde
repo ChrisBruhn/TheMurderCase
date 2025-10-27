@@ -26,20 +26,29 @@ public void draw() {
 // Metode til at oprette noder og tilføje dem til sagen
 private void createNodes() {
   // Opret personer
-  PersonNode victim1 = new PersonNode("John Doe", "Offer", random(50, 500), random(50, 500));
-  PersonNode suspect1 = new PersonNode("Alice Smith", "Mistænkt", random(50, 500), random(50, 500));
-  PersonNode suspect2 = new PersonNode("Bob Johnson", "Mistænkt", random(50, 500), random(50, 500));
-  PersonNode witness1 = new PersonNode("Emily Brown", "Vidne", random(50, 500), random(50, 500));
+  PersonNode victim1 = new PersonNode("Charles Anderson/John Doe", "Offer", random(350, 450), random(350, 450));
+
+  PersonNode suspect1 = new PersonNode("Alice Smith", "Mistænkt", random(100, 100), random(50, 750));
+  PersonNode suspect2 = new PersonNode("Claire Davids", "Mistænkt", random(100, 100), random(50, 750));
+  PersonNode suspect3 = new PersonNode("Bob Johnson", "Mistænkt", random(100, 100), random(50, 750));
+  PersonNode suspect4 = new PersonNode("David Brown", "Mistænkt", random(100, 100), random(50, 750));
+
+  PersonNode witness1 = new PersonNode("Emily Brown", "Vidne", random(700, 750), random(50, 750));
+  PersonNode witness2 = new PersonNode("Sophia Clark", "Vidne", random(700, 750), random(50, 750));
 
   // Tilføj personer til sagen
   criminalCase.addPerson(victim1);
   criminalCase.addPerson(suspect1);
   criminalCase.addPerson(suspect2);
+  criminalCase.addPerson(suspect3);
+  criminalCase.addPerson(suspect4);
+
   criminalCase.addPerson(witness1);
+  criminalCase.addPerson(witness2);
 
   // Opret køretøjer
-  VehicleNode vehicle1 = new VehicleNode("ABC123", "Alice Smith", random(50, 500), random(50, 500));
-  VehicleNode vehicle2 = new VehicleNode("XYZ789", "Bob Johnson", random(50, 500), random(50, 500));
+  VehicleNode vehicle1 = new VehicleNode("ABC123", "Alice Smith", random(500,height-100), random(300, 500));
+  VehicleNode vehicle2 = new VehicleNode("XYZ789", "Bob Johnson", random(500,height-100), random(300, 500));
 
   // Tilføj køretøjer til sagen
   criminalCase.addVehicle(vehicle1);
@@ -47,15 +56,21 @@ private void createNodes() {
 
   // Opret våben
   WeaponNode weapon1 = new WeaponNode("Knife", "Alice Smith");
-  WeaponNode weapon2 = new WeaponNode("Gun", "Bob Johnson");
+  WeaponNode weapon2 = new WeaponNode("IcePick", "Claire Davids");
+  WeaponNode weapon3 = new WeaponNode("Gun", "Bob Johnson");
+  WeaponNode weapon4 = new WeaponNode("ShotGun", "David Brown");
+  
+    
 
   // Tilføj våben til sagen
   criminalCase.addWeapon(weapon1);
   criminalCase.addWeapon(weapon2);
+  criminalCase.addWeapon(weapon3);
+  criminalCase.addWeapon(weapon4);
 
   // Opret gerningssteder
-  LocationNode crimeScene1 = new LocationNode("123 Main St", "2024-02-19 10:00", "Homicide", 500, 500);
-  LocationNode crimeScene2 = new LocationNode("456 Oak St", "2024-02-20 15:30", "Robbery", 600, 600);
+  LocationNode crimeScene1 = new LocationNode("123 Main St", "2024-02-19 10:00", "Homicide", width/2+100, 500);
+  LocationNode crimeScene2 = new LocationNode("456 Oak St", "2024-02-20 15:30", "Robbery", width/2-100, 500);
 
   // Tilføj gerningssteder til sagen
   criminalCase.addLocation(crimeScene1);
@@ -64,16 +79,32 @@ private void createNodes() {
   // Opret relationer mellem personer, køretøjer, våben og gerningssteder
   victim1.addConnectedPerson(suspect1);
   victim1.addConnectedPerson(suspect2);
+  victim1.addConnectedPerson(suspect3);
+  victim1.addConnectedPerson(suspect4);
+   
   victim1.addConnectedPerson(witness1);
+  
+  
+  
+  witness1.addConnectedPerson(suspect1);
+  witness2.addConnectedPerson(suspect3);
+  
 
   vehicle1.addConnectedPerson(suspect1);
   vehicle2.addConnectedPerson(suspect2);
 
   weapon1.addConnectedPerson(suspect1);
   weapon2.addConnectedPerson(suspect2);
+  weapon3.addConnectedPerson(suspect3);
+  weapon4.addConnectedPerson(suspect4);
 
+  crimeScene1.addConnectedPerson(victim1);
   crimeScene1.addConnectedPerson(suspect1);
   crimeScene1.addConnectedPerson(suspect2);
+  //crimeScene1.addConnectedPerson(suspect3);
+  crimeScene1.addConnectedPerson(witness2);
+  crimeScene1.addConnectedPerson(witness1);
+  
 }
 
 // Metode til at tegne noderne
@@ -112,6 +143,17 @@ private void drawNodes() {
       fill(0); // Sort farve
       text(person.getName(), nodeX, nodeY - nodeSize / 2 - 5); // Placer teksten over noden
     }
+    if (person.role.equals("Vidne")) {
+      float nodeSize = 10; // Størrelsen af noden (cirklen)
+      float nodeX = person.getX();
+      float nodeY = person.getY();
+      fill(0, 255, 255); // farve for vidne
+      ellipse(nodeX, nodeY, nodeSize, nodeSize); // Eksempel på en person-node
+      // Skriv personens navn ved siden af noden
+      textAlign(CENTER, CENTER);
+      fill(0); // Sort farve
+      text(person.getName(), nodeX, nodeY - nodeSize / 2 - 5); // Placer teksten over noden
+    }
   }
 
   for (VehicleNode vehicle : criminalCase.getVehicles()) {
@@ -127,7 +169,7 @@ private void drawNodes() {
   }
 
   for (LocationNode location : criminalCase.getLocations()) {
-    float nodeSize = 40; // Størrelsen af noden (cirklen)
+    float nodeSize = 10; // Størrelsen af noden (cirklen)
     float nodeX = location.getX();
     float nodeY = location.getY();
     fill(0, 0, 255); // Blå farve
@@ -138,6 +180,20 @@ private void drawNodes() {
     fill(0); // Sort farve
     text(location.getAddress(), nodeX, nodeY + nodeSize / 2 + 10); // Placer teksten under noden
   }
+  
+  for (WeaponNode weapon : criminalCase.getWeapons()) {
+    float nodeSize = 10; // Størrelsen af noden (cirklen)
+    float nodeX = weapon.getX();
+    float nodeY = weapon.getY();
+    fill(0 ); // farve
+    rect(nodeX, nodeY, nodeSize, nodeSize-20);
+
+    // Skriv gerningsstedets adresse under noden
+    textAlign(CENTER, CENTER);
+    fill(0); // Sort farve
+    text(weapon.getType(), nodeX, nodeY + nodeSize / 2 + 10); // Placer teksten under noden
+  }
+  
 }
 
 
@@ -163,86 +219,105 @@ private void drawConnections() {
       line(vehicle.getX(), vehicle.getY(), connectedPerson.getX(), connectedPerson.getY());
     }
   }
+  // Gennemgå alle Locationer
+  for (LocationNode location : criminalCase.getLocations()) {
+    // Gennemgå alle forbundne personer til det aktuelle køretøj
+    for (PersonNode connectedPerson : location.getConnectedPersons()) {
+      // Tegn en linje mellem køretøjet og den forbundne person
+      stroke(0); // Sort farve
+      line(location.getX(), location.getY(), connectedPerson.getX(), connectedPerson.getY());
+    }
+  }
+// Gennemgå alle Våben
+  for (WeaponNode weapon : criminalCase.getWeapons()) {
+    // Gennemgå alle forbundne personer til det aktuelle køretøj
+    for (PersonNode connectedPerson : weapon.getConnectedPersons()) {
+      // Tegn en linje mellem køretøjet og den forbundne person
+      stroke(0); // Sort farve
+      line(weapon.getX(), weapon.getY(), connectedPerson.getX(), connectedPerson.getY());
+    }
+  }
+
 
   // Tegn flere typer forbindelser efter behov (f.eks. våben, gerningssteder osv.)
 }
 
 public void adjustNodePositions() {
-  int distanceBetween = 100;
-  
-    // Juster x- og y-positioner for personer
-    for (int i = 0; i < criminalCase.getPersons().size(); i++) {
-        for (int j = i + 1; j < criminalCase.getPersons().size(); j++) {
-            PersonNode node1 = criminalCase.getPersons().get(i);
-            PersonNode node2 = criminalCase.getPersons().get(j);
-            float dx = node2.getX() - node1.getX();
-            float dy = node2.getY() - node1.getY();
-            float distance = dist(node1.getX(), node1.getY(), node2.getX(), node2.getY());
-            if (distance < distanceBetween) {
-                float offsetX = (distanceBetween - distance) / 2 * dx / distance;
-                float offsetY = (distanceBetween - distance) / 2 * dy / distance;
-                node1.setX(node1.getX() - offsetX);
-                node1.setY(node1.getY() - offsetY);
-                node2.setX(node2.getX() + offsetX);
-                node2.setY(node2.getY() + offsetY);
-            }
-        }
-    }
+  int distanceBetween = 150;
 
-    // Juster x- og y-positioner for køretøjer
-    for (int i = 0; i < criminalCase.getVehicles().size(); i++) {
-        for (int j = 0; j < criminalCase.getPersons().size(); j++) {
-            VehicleNode vehicle = criminalCase.getVehicles().get(i);
-            PersonNode person = criminalCase.getPersons().get(j);
-            float dx = person.getX() - vehicle.getX();
-            float dy = person.getY() - vehicle.getY();
-            float distance = dist(vehicle.getX(), vehicle.getY(), person.getX(), person.getY());
-            if (distance < distanceBetween) {
-                float offsetX = (distanceBetween - distance) / 2 * dx / distance;
-                float offsetY = (distanceBetween - distance) / 2 * dy / distance;
-                vehicle.setX(vehicle.getX() - offsetX);
-                vehicle.setY(vehicle.getY() - offsetY);
-                person.setX(person.getX() + offsetX);
-                person.setY(person.getY() + offsetY);
-            }
-        }
+  // Juster x- og y-positioner for personer
+  for (int i = 0; i < criminalCase.getPersons().size(); i++) {
+    for (int j = i + 1; j < criminalCase.getPersons().size(); j++) {
+      PersonNode node1 = criminalCase.getPersons().get(i);
+      PersonNode node2 = criminalCase.getPersons().get(j);
+      float dx = node2.getX() - node1.getX();
+      float dy = node2.getY() - node1.getY();
+      float distance = dist(node1.getX(), node1.getY(), node2.getX(), node2.getY());
+      if (distance < distanceBetween) {
+        float offsetX = (distanceBetween - distance) / 2 * dx / distance;
+        float offsetY = (distanceBetween - distance) / 2 * dy / distance;
+        node1.setX(node1.getX() - offsetX);
+        node1.setY(node1.getY() - offsetY);
+        node2.setX(node2.getX() + offsetX);
+        node2.setY(node2.getY() + offsetY);
+      }
     }
+  }
 
-    // Juster x- og y-positioner for våben
-    for (int i = 0; i < criminalCase.getWeapons().size(); i++) {
-        for (int j = 0; j < criminalCase.getPersons().size(); j++) {
-            WeaponNode weapon = criminalCase.getWeapons().get(i);
-            PersonNode person = criminalCase.getPersons().get(j);
-            float dx = person.getX() - weapon.getX();
-            float dy = person.getY() - weapon.getY();
-            float distance = dist(weapon.getX(), weapon.getY(), person.getX(), person.getY());
-            if (distance < distanceBetween) {
-                float offsetX = (distanceBetween - distance) / 2 * dx / distance;
-                float offsetY = (distanceBetween - distance) / 2 * dy / distance;
-                weapon.setX(weapon.getX() - offsetX);
-                weapon.setY(weapon.getY() - offsetY);
-                person.setX(person.getX() + offsetX);
-                person.setY(person.getY() + offsetY);
-            }
-        }
+  // Juster x- og y-positioner for køretøjer
+  for (int i = 0; i < criminalCase.getVehicles().size(); i++) {
+    for (int j = 0; j < criminalCase.getPersons().size(); j++) {
+      VehicleNode vehicle = criminalCase.getVehicles().get(i);
+      PersonNode person = criminalCase.getPersons().get(j);
+      float dx = person.getX() - vehicle.getX();
+      float dy = person.getY() - vehicle.getY();
+      float distance = dist(vehicle.getX(), vehicle.getY(), person.getX(), person.getY());
+      if (distance < distanceBetween) {
+        float offsetX = (distanceBetween - distance) / 2 * dx / distance;
+        float offsetY = (distanceBetween - distance) / 2 * dy / distance;
+        vehicle.setX(vehicle.getX() - offsetX);
+        vehicle.setY(vehicle.getY() - offsetY);
+        person.setX(person.getX() + offsetX);
+        person.setY(person.getY() + offsetY);
+      }
     }
+  }
 
-    // Juster x- og y-positioner for gerningssteder
-    for (int i = 0; i < criminalCase.getLocations().size(); i++) {
-        for (int j = 0; j < criminalCase.getPersons().size(); j++) {
-            LocationNode location = criminalCase.getLocations().get(i);
-            PersonNode person = criminalCase.getPersons().get(j);
-            float dx = person.getX() - location.getX();
-            float dy = person.getY() - location.getY();
-            float distance = dist(location.getX(), location.getY(), person.getX(), person.getY());
-            if (distance < distanceBetween) {
-                float offsetX = (distanceBetween - distance) / 2 * dx / distance;
-                float offsetY = (distanceBetween - distance) / 2 * dy / distance;
-                location.setX(location.getX() - offsetX);
-                location.setY(location.getY() - offsetY);
-                person.setX(person.getX() + offsetX);
-                person.setY(person.getY() + offsetY);
-            }
-        }
+  // Juster x- og y-positioner for våben
+  for (int i = 0; i < criminalCase.getWeapons().size(); i++) {
+    for (int j = 0; j < criminalCase.getPersons().size(); j++) {
+      WeaponNode weapon = criminalCase.getWeapons().get(i);
+      PersonNode person = criminalCase.getPersons().get(j);
+      float dx = person.getX() - weapon.getX();
+      float dy = person.getY() - weapon.getY();
+      float distance = dist(weapon.getX(), weapon.getY(), person.getX(), person.getY());
+      if (distance < distanceBetween) {
+        float offsetX = (distanceBetween - distance) / 2 * dx / distance;
+        float offsetY = (distanceBetween - distance) / 2 * dy / distance;
+        weapon.setX(weapon.getX() - offsetX);
+        weapon.setY(weapon.getY() - offsetY);
+        person.setX(person.getX() + offsetX);
+        person.setY(person.getY() + offsetY);
+      }
     }
+  }
+
+  // Juster x- og y-positioner for gerningssteder
+  for (int i = 0; i < criminalCase.getLocations().size(); i++) {
+    for (int j = 0; j < criminalCase.getPersons().size(); j++) {
+      LocationNode location = criminalCase.getLocations().get(i);
+      PersonNode person = criminalCase.getPersons().get(j);
+      float dx = person.getX() - location.getX();
+      float dy = person.getY() - location.getY();
+      float distance = dist(location.getX(), location.getY(), person.getX(), person.getY());
+      if (distance < distanceBetween) {
+        float offsetX = (distanceBetween - distance) / 2 * dx / distance;
+        float offsetY = (distanceBetween - distance) / 2 * dy / distance;
+        location.setX(location.getX() - offsetX);
+        location.setY(location.getY() - offsetY);
+        person.setX(person.getX() + offsetX);
+        person.setY(person.getY() + offsetY);
+      }
+    }
+  }
 }

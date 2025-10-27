@@ -2,8 +2,8 @@
 public class WeaponNode {
     private String type;
     private String owner;
-    float x=100;
-    float y=100;
+    float x=random(50,400);
+    float y=random(50,100);
     private List<PersonNode> connectedPersons;
 
     public WeaponNode(String type, String owner) {
